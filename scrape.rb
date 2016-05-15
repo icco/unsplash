@@ -1,4 +1,4 @@
-#! /bin/env/ruby
+#! /usr/bin/env ruby
 # This scrapes unsplash.com
 
 # https://unsplash.com/napi/photos/curated?page=3&per_page=12&order_by=latest
@@ -69,7 +69,7 @@ loop do
   jsn.each do |img|
     url = img["urls"]["full"] + "&fit=crop&w=1920&h=1200"
     filename = Digest::SHA256.hexdigest(url) + ".jpg"
-    puts "#{url} -> #{filename}"
+    puts "#{url}\n\t-> #{filename}"
     url = URI(url)
 
     filepath = File.join(path, filename)
