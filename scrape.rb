@@ -66,7 +66,7 @@ loop do
   end
 
   jsn.each do |img|
-    url = img["urls"]["full"]
+    url = img["urls"]["full"] + "&fit=crop&w=1920&h=1200"
     puts url
     url = URI(url)
 
