@@ -70,16 +70,19 @@ loop do
     puts url
     url = URI(url)
 
-    Net::HTTP.start(url.host) do |http|
-      f = open(File.join(path, url.path + ".jpg"), "w")
-      begin
-        http.request_get(url) do |resp|
-          resp.read_body do |segment|
-            f.write(segment)
+    filepath = File.join(path, File.basename(url.path) + ".jpg")
+    if not File.exist?(filepath)
+      Net::HTTP.start(url.host) do |http|
+        f = open(filepath, "w")
+        begin
+          http.request_get(url) do |resp|
+            resp.read_body do |segment|
+              f.write(segment)
+            end
           end
+        ensure
+          f.close()
         end
-      ensure
-        f.close()
       end
     end
   end
