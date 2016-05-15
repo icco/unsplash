@@ -9,6 +9,7 @@ require "bundler/setup"
 Bundler.require(:default)
 
 require "cgi"
+require "digest"
 require "pp"
 require "net/http"
 
@@ -67,10 +68,11 @@ loop do
 
   jsn.each do |img|
     url = img["urls"]["full"] + "&fit=crop&w=1920&h=1200"
-    puts url
+    filename = Digest::SHA256.hexdigest(url) + ".jpg"
+    puts "#{url} -> #{filename}"
     url = URI(url)
 
-    filepath = File.join(path, File.basename(url.path) + ".jpg")
+    filepath = File.join(path, filename)
     if not File.exist?(filepath)
       Net::HTTP.start(url.host) do |http|
         f = open(filepath, "w")
