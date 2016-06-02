@@ -1,6 +1,8 @@
 #! /usr/bin/env ruby
 # This scrapes unsplash.com
 
+# Example API endpoints:
+#
 # https://unsplash.com/napi/photos/curated?page=3&per_page=12&order_by=latest
 # https://unsplash.com/napi/photos?page=3&per_page=12&order_by=latest
 
@@ -13,6 +15,7 @@ require "digest"
 require "pp"
 require "net/http"
 
+# Take the link header, and return a hash of links.
 def parse_link_header header
   links = Hash.new
   parts = header.split(",")
@@ -30,10 +33,14 @@ end
 images = {}
 path = "images"
 
+# If an argument is passed, write images to there. Otherwise just write to an
+# images folder.
 if ARGV[0]
   path = ARGV[0]
 end
 
+# Until there are no more pages, iterate through every page and download the
+# files.
 page = 0
 loop do
   # curl "https://unsplash.com/napi/photos?page=3&per_page=12&order_by=latest" \
@@ -67,6 +74,7 @@ loop do
   end
 
   jsn.each do |img|
+    # Append new imgix params to get the image size I want.
     url = img["urls"]["full"] + "&fit=crop&w=1920&h=1200"
     filename = Digest::SHA256.hexdigest(url) + ".jpg"
     puts "#{url}\n\t-> #{filename}"
@@ -89,5 +97,6 @@ loop do
     end
   end
 
+  # Sleep just to be nice.
   sleep 0.3
 end
